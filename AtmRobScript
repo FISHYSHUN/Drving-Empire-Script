@@ -8,6 +8,7 @@ local Char = player.Character or player.CharacterAdded:Wait()
 local Camera = workspace.CurrentCamera
 --Values
 local Tracking = false
+local Switch = false
 
 function FindAtm(descendants:Folder)
 	for i, v in pairs(descendants:GetDescendants()) do
@@ -28,7 +29,7 @@ function autoTriggerPrompt(prompt:ProximityPrompt)
 		-- Simulate the player starting the hold
 		prompt:InputHoldBegin()
 		-- Wait for the required hold duration
-		task.wait(prompt.HoldDuration + 0.1)
+		task.wait(prompt.HoldDuration + 0.2)
 		-- Simulate the player releasing the hold
 		prompt:InputHoldEnd()
 	else
@@ -42,7 +43,7 @@ for _, v in workspace:GetDescendants() do
 	end
 end
 
-Runservice.heartbeat:Connect(function()
+Runservice.renderStepped:Connect(function()
 	local Atm = FindAtm(workspace)
 	local Attachment = Atm.Attachment
 
@@ -55,16 +56,32 @@ Runservice.heartbeat:Connect(function()
 			Camera.CameraSubject = Attachment
 			Camera.CameraType = Enum.CameraType.Scriptable
 			Camera.CFrame = Attachment.WorldCFrame * CFrame.new(0,4,-1) * CFrame.Angles(math.rad(-90),0,0)
-			
+
 			task.wait(.4)
 
 			autoTriggerPrompt(Prompt)
 
-			Tracking = false
+			Camera.CameraSubject = player.Character.Humanoid
+			Camera.CameraType = Enum.CameraType.Custom
+			task.wait(.1)
+			Switch = true
 			task.wait(.25)
+			Tracking = false
 		else
 			Tracking = false
-			task.wait(.25)
+			task.wait(1)
 		end
+	end
+
+	if Switch then
+		local Vectors = {
+			Vector3.new(-316.107,20,-1661.905),
+			Vector3.new(99,35,1556)
+		}
+
+		local ChosenVector = Vectors[math.random(1, #Vectors)]
+		Char:PivotTo(Char:GetPivot() + ChosenVector)
+		task.wait(.25)
+		Switch = false
 	end
 end)
