@@ -104,7 +104,8 @@ Runservice.Heartbeat:Connect(function()
 		end
 	end
 	
-	if not Switch then
+	if not Switch and not Tracking then
+		task.wait(1)
 		Timer(Char)
 	end
 end)
