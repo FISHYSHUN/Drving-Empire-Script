@@ -43,12 +43,6 @@ function CameraFollow(Attachment)
 	Camera.CFrame = Attachment.WorldCFrame * CFrame.new(0,4,-1) * CFrame.Angles(math.rad(-90),0,0)
 end
 
-for _, v in workspace:GetDescendants() do
-	if v.Name == "071_GARDEN_CENTER" and v:IsA("Model") then
-		v:Destroy()
-	end
-end
-
 function SwitchSides(Char:Model)
 	local Vectors = {
 		Vector3.new(-316.107,20,-1661.905),
@@ -59,21 +53,9 @@ function SwitchSides(Char:Model)
 	Char:MoveTo(ChosenVector)
 end
 
-function Timer(Char)
-	Tracking = true
-	Switch = true
-	local Time = 15
-
-	while Time > 0 do
-		Time -= 1
-		task.wait(1)
-		print(Time)
-
-		if Time <= 0 then
-			SwitchSides(Char)
-			Switch = false
-			Tracking = false
-		end
+for _, v in workspace:GetDescendants() do
+	if v.Name == "071_GARDEN_CENTER" and v:IsA("Model") then
+		v:Destroy()
 	end
 end
 
@@ -86,7 +68,6 @@ Runservice.Heartbeat:Connect(function()
 		
 		if not Tracking then
 			Tracking = true
-			Switch = true
 
 			Char:PivotTo(Attachment.WorldCFrame)
 			CameraFollow(Attachment)
@@ -97,15 +78,10 @@ Runservice.Heartbeat:Connect(function()
 			
 			Camera.CameraSubject = player.Character.Humanoid
 			Camera.CameraType = Enum.CameraType.Custom
+			SwitchSides(Char)
 			
-			task.wait(.125)
-			Switch = false
+			task.wait(0.65)
 			Tracking = false
 		end
-	end
-	
-	if not Switch and not Tracking then
-		task.wait(1)
-		Timer(Char)
 	end
 end)
