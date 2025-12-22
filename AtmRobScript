@@ -37,6 +37,12 @@ function autoTriggerPrompt(prompt:ProximityPrompt)
 	end
 end
 
+function CameraFollow(Attachment)
+	Camera.CameraSubject = Attachment
+	Camera.CameraType = Enum.CameraType.Scriptable
+	Camera.CFrame = Attachment.WorldCFrame * CFrame.new(0,4,-1) * CFrame.Angles(math.rad(-90),0,0)
+end
+
 for _, v in workspace:GetDescendants() do
 	if v.Name == "071_GARDEN_CENTER" and v:IsA("Model") then
 		v:Destroy()
@@ -53,34 +59,33 @@ function SwitchSides(Char:Model)
 	Char:MoveTo(ChosenVector)
 end
 
-Runservice.renderStepped:Connect(function()
+Runservice.Heartbeat:Connect(function()
 	local Atm = FindAtm(workspace)
-	local Attachment = Atm.Attachment
-
-	if not Tracking then
-		if Atm and Atm:GetAttribute("State") ~= "Busted" then
-			local Prompt = Attachment.ProximityPrompt
-
+	
+	if Atm and Atm:GetAttribute("State") ~= "Busted" then
+		local Attachment = Atm.Attachment
+		local Prompt = Attachment.ProximityPrompt
+		
+		if not Tracking then
 			Tracking = true
+
 			Char:PivotTo(Attachment.WorldCFrame)
-			Camera.CameraSubject = Attachment
-			Camera.CameraType = Enum.CameraType.Scriptable
-			Camera.CFrame = Attachment.WorldCFrame * CFrame.new(0,4,-1) * CFrame.Angles(math.rad(-90),0,0)
-
-			task.wait(.4)
-
+			CameraFollow(Attachment)
+			
+			task.wait(.345)
+			
 			autoTriggerPrompt(Prompt)
-
+			
 			Camera.CameraSubject = player.Character.Humanoid
 			Camera.CameraType = Enum.CameraType.Custom
 			
-			SwitchSides(Char)
-			task.wait(.35)
-
+			task.wait(.125)
 			Tracking = false
 		else
 			Tracking = true
 			SwitchSides(Char)
+			Camera.CameraSubject = player.Character.Humanoid
+			Camera.CameraType = Enum.CameraType.Custom
 			
 			task.wait(1)
 			Tracking = false
