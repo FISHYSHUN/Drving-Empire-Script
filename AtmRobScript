@@ -38,6 +38,12 @@ function autoTriggerPrompt(prompt:ProximityPrompt)
 	end
 end
 
+for _, v in workspace:GetDescendants() do
+	if v.Name == "071_GARDEN_CENTER" and v:IsA("Model") then
+		v:Destroy()
+	end
+end
+
 Runservice.heartbeat:Connect(function()
 	local Atm = FindAtm(workspace)
 	local Attachment = Atm.Attachment
