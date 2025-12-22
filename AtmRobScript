@@ -59,6 +59,24 @@ function SwitchSides(Char:Model)
 	Char:MoveTo(ChosenVector)
 end
 
+function Timer(Char)
+	Tracking = true
+	Switch = true
+	local Time = 15
+
+	while Time > 0 do
+		Time -= 1
+		task.wait(1)
+		print(Time)
+
+		if Time <= 0 then
+			SwitchSides(Char)
+			Switch = false
+			Tracking = false
+		end
+	end
+end
+
 Runservice.Heartbeat:Connect(function()
 	local Atm = FindAtm(workspace)
 	
@@ -68,6 +86,7 @@ Runservice.Heartbeat:Connect(function()
 		
 		if not Tracking then
 			Tracking = true
+			Switch = true
 
 			Char:PivotTo(Attachment.WorldCFrame)
 			CameraFollow(Attachment)
@@ -80,15 +99,12 @@ Runservice.Heartbeat:Connect(function()
 			Camera.CameraType = Enum.CameraType.Custom
 			
 			task.wait(.125)
-			Tracking = false
-		else
-			Tracking = true
-			SwitchSides(Char)
-			Camera.CameraSubject = player.Character.Humanoid
-			Camera.CameraType = Enum.CameraType.Custom
-			
-			task.wait(1)
+			Switch = false
 			Tracking = false
 		end
+	end
+	
+	if not Switch then
+		Timer(Char)
 	end
 end)
