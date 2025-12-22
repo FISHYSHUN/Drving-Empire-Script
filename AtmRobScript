@@ -24,7 +24,7 @@ function FindAtm(descendants:Folder)
 end
 
 -- Function to trigger the prompt automatically
-local function autoTriggerPrompt(prompt:ProximityPrompt)
+function autoTriggerPrompt(prompt:ProximityPrompt)
 	if prompt and prompt:IsA("ProximityPrompt") then
 		task.wait()
 		-- Simulate the player starting the hold
@@ -44,7 +44,7 @@ function CameraFollow(Attachment)
 	Camera.CFrame = Attachment.WorldCFrame * CFrame.new(0,4,-1) * CFrame.Angles(math.rad(-90),0,0)
 end
 
-function SwitchSides(Char:Model)
+local function SwitchSides(Char:Model)
 	local Vectors = {
 		Vector3.new(-88, 28, -152),
 		Vector3.new(-1278, 17, 2851)
@@ -81,10 +81,11 @@ Runservice.Heartbeat:Connect(function()
 	if Debounce == true then
 		
 		local ATM = FindAtm(workspace)
-
-		if ATM and ATM:GetAttribute("State") ~= "Busted" then
-			if not Tracking then Tracking = true end
-			if Tracking then
+		
+		if ATM ~= nil and ATM:GetAttribute("State") ~= "Busted" then
+			if not Tracking then
+				Tracking = true
+				
 				local Attachment = ATM.Attachment
 				local Prompt = Attachment.ProximityPrompt
 
@@ -98,17 +99,20 @@ Runservice.Heartbeat:Connect(function()
 				Camera.CameraSubject = player.Character.Humanoid
 				Camera.CameraType = Enum.CameraType.Custom
 
-				task.wait(0.1)
+				task.wait(0.2)
 				Tracking = false
 			end
 		end
-
-		if not Tracking and not ATM then
-			Tracking = true
-			SwitchSides(Char)
-
-			task.wait(1)
-			Tracking = false
+		
+		if ATM == nil then
+			if not Switch then
+				Switch = true
+				
+				SwitchSides(Char)
+				task.wait(1)
+				
+				Switch = false
+			end
 		end
 	end
 end)
