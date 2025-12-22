@@ -55,6 +55,7 @@ Runservice.heartbeat:Connect(function()
 			autoTriggerPrompt(Prompt)
 
 			Tracking = false
+			task.wait(.25)
 		else
 			Tracking = false
 		end
