@@ -77,7 +77,7 @@ Runservice.Heartbeat:Connect(function()
 		Camera.CameraSubject = player.Character.Humanoid
 		Camera.CameraType = Enum.CameraType.Custom
 
-		task.wait(0.65)
+		task.wait(0.1)
 		Tracking = false
 	end
 	
