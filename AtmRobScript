@@ -4,9 +4,12 @@ local UserInputService = game:GetService("UserInputService")
 
 --Variables
 local player = game.Players.LocalPlayer
-local Char = player.character
+local Char = player.Character or player.CharacterAdded:Wait()
+local Camera = workspace.CurrentCamera
 --Values
 local Tracking = false
+
+task.wait(.1)
 
 function FindAtm(descendants:Folder)
 	for i, v in pairs(descendants:GetDescendants()) do
@@ -21,12 +24,13 @@ function FindAtm(descendants:Folder)
 end
 
 -- Function to trigger the prompt automatically
-local function autoTriggerPrompt(prompt)
+function autoTriggerPrompt(prompt:ProximityPrompt)
 	if prompt and prompt:IsA("ProximityPrompt") then
+		prompt.RequiresLineOfSight = true
 		-- Simulate the player starting the hold
 		prompt:InputHoldBegin()
 		-- Wait for the required hold duration
-		task.wait(prompt.HoldDuration)
+		task.wait(prompt.HoldDuration + 0.1)
 		-- Simulate the player releasing the hold
 		prompt:InputHoldEnd()
 	else
@@ -41,23 +45,24 @@ for _, object in workspace:GetDescendants() do
 end
 
 Runservice.heartbeat:Connect(function()
+	local Atm = FindAtm(workspace)
+	local Attachment = Atm.Attachment
+	
 	if not Tracking then
-		local Atm = FindAtm(workspace)
-
 		if Atm and Atm:GetAttribute("State") ~= "Busted" then
-			Tracking = true
-
-			local Attachment = Atm.Attachment
 			local Prompt = Attachment.ProximityPrompt
-
+			
+			Tracking = true
 			Char:PivotTo(Attachment.WorldCFrame)
+			Camera.CameraSubject = Atm
+			
+			task.wait(.25)
+			
 			autoTriggerPrompt(Prompt)
-
+			
 			Tracking = false
-			task.wait()
 		else
 			Tracking = false
-			task.wait()
 		end
 	end
 end)
