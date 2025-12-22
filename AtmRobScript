@@ -60,28 +60,33 @@ for _, v in workspace:GetDescendants() do
 end
 
 Runservice.Heartbeat:Connect(function()
-	local Atm = FindAtm(workspace)
+	local ATM = FindAtm(workspace)
 	
-	if Atm and Atm:GetAttribute("State") ~= "Busted" then
-		local Attachment = Atm.Attachment
+	if ATM and ATM:GetAttribute("State") ~= "Busted" then
+		if not Tracking then Tracking = true end
+		local Attachment = ATM.Attachment
 		local Prompt = Attachment.ProximityPrompt
 		
-		if not Tracking then
-			Tracking = true
+		Char:PivotTo(Attachment.WorldCFrame)
+		CameraFollow(Attachment)
 
-			Char:PivotTo(Attachment.WorldCFrame)
-			CameraFollow(Attachment)
-			
-			task.wait(.345)
-			
-			autoTriggerPrompt(Prompt)
-			
-			Camera.CameraSubject = player.Character.Humanoid
-			Camera.CameraType = Enum.CameraType.Custom
-			SwitchSides(Char)
-			
-			task.wait(0.65)
-			Tracking = false
-		end
+		task.wait(.345)
+
+		autoTriggerPrompt(Prompt)
+
+		Camera.CameraSubject = player.Character.Humanoid
+		Camera.CameraType = Enum.CameraType.Custom
+
+		task.wait(0.65)
+		Tracking = false
 	end
+	
+	if not Tracking and not ATM then
+		Tracking = true
+		SwitchSides(Char)
+		
+		task.wait(1)
+		Tracking = false
+	end
+	
 end)
