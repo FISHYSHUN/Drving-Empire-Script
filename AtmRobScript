@@ -11,6 +11,8 @@ local Debounce = false
 local Tracking = false
 local Switch = false
 
+---
+
 function FindAtm(descendants:Folder)
 	for i, v in pairs(descendants:GetDescendants()) do
 		if v:GetAttribute("State") then
@@ -62,10 +64,13 @@ end
 
 local ScreenUi = Instance.new("ScreenGui", player.PlayerGui)
 local NewButton = Instance.new("TextButton", ScreenUi)
+local ClaimButton = Instance.new("TextButton", ScreenUi)
 
-NewButton.Active = true
 NewButton.Size = UDim2.new(.1, 0, 0.05, 0)
 NewButton.Position = UDim2.new(0, 0, .95, 0)
+ClaimButton.Size = UDim2.new(.05, 0, 0.05, 0)
+ClaimButton.Position = UDim2.new(0.1, 0, .95, 0)
+ClaimButton.Text = "Claim Bounty"
 
 NewButton.Activated:Connect(function()
 	if not Debounce then
@@ -75,6 +80,10 @@ NewButton.Activated:Connect(function()
 		Debounce = false
 		NewButton.Text = "State: "..tostring(Debounce)
 	end
+end)
+
+ClaimButton.Activated:Connect(function()
+	Char:MoveTo(Vector3.new(2541, 15, 4032))
 end)
 
 Runservice.Heartbeat:Connect(function()
