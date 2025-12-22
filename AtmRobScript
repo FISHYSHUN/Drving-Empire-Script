@@ -7,6 +7,7 @@ local player = game.Players.LocalPlayer
 local Char = player.Character or player.CharacterAdded:Wait()
 local Camera = workspace.CurrentCamera
 --Values
+local Debounce = false
 local Tracking = false
 local Switch = false
 
@@ -59,34 +60,53 @@ for _, v in workspace:GetDescendants() do
 	end
 end
 
+local ScreenUi = Instance.new("ScreenGui", player.PlayerGui)
+local NewButton = Instance.new("TextButton", ScreenUi)
+
+NewButton.Active = true
+NewButton.Size = UDim2.new(.1, 0, 0.05, 0)
+NewButton.Position = UDim2.new(0, 0, .95, 0)
+
+NewButton.Activated:Connect(function()
+	if not Debounce then
+		Debounce = true
+		NewButton.Text = "State: "..tostring(Debounce)
+	else
+		Debounce = false
+		NewButton.Text = "State: "..tostring(Debounce)
+	end
+end)
+
 Runservice.Heartbeat:Connect(function()
-	local ATM = FindAtm(workspace)
-	
-	if ATM and ATM:GetAttribute("State") ~= "Busted" then
-		if not Tracking then Tracking = true end
-		local Attachment = ATM.Attachment
-		local Prompt = Attachment.ProximityPrompt
+	if Debounce == true then
 		
-		Char:PivotTo(Attachment.WorldCFrame)
-		CameraFollow(Attachment)
+		local ATM = FindAtm(workspace)
 
-		task.wait(.345)
+		if ATM and ATM:GetAttribute("State") ~= "Busted" then
+			if not Tracking then Tracking = true end
+			local Attachment = ATM.Attachment
+			local Prompt = Attachment.ProximityPrompt
 
-		autoTriggerPrompt(Prompt)
+			Char:PivotTo(Attachment.WorldCFrame)
+			CameraFollow(Attachment)
 
-		Camera.CameraSubject = player.Character.Humanoid
-		Camera.CameraType = Enum.CameraType.Custom
+			task.wait(.345)
 
-		task.wait(0.1)
-		Tracking = false
+			autoTriggerPrompt(Prompt)
+
+			Camera.CameraSubject = player.Character.Humanoid
+			Camera.CameraType = Enum.CameraType.Custom
+
+			task.wait(0.1)
+			Tracking = false
+		end
+
+		if not Tracking and not ATM then
+			Tracking = true
+			SwitchSides(Char)
+
+			task.wait(1)
+			Tracking = false
+		end
 	end
-	
-	if not Tracking and not ATM then
-		Tracking = true
-		SwitchSides(Char)
-		
-		task.wait(1)
-		Tracking = false
-	end
-	
 end)
