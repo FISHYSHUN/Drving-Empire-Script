@@ -26,7 +26,7 @@ end
 -- Function to trigger the prompt automatically
 function autoTriggerPrompt(prompt:ProximityPrompt)
 	if prompt and prompt:IsA("ProximityPrompt") then
-		prompt.RequiresLineOfSight = true
+		task.wait()
 		-- Simulate the player starting the hold
 		prompt:InputHoldBegin()
 		-- Wait for the required hold duration
