@@ -79,6 +79,7 @@ Runservice.renderStepped:Connect(function()
 
 			Tracking = false
 		else
+			Tracking = true
 			SwitchSides(Char)
 			
 			task.wait(1)
