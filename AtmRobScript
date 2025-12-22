@@ -48,7 +48,9 @@ Runservice.heartbeat:Connect(function()
 
 			Tracking = true
 			Char:PivotTo(Attachment.WorldCFrame)
-			Camera.CameraSubject = Atm
+			Camera.CameraSubject = Attachment
+			Camera.CameraType = Enum.CameraType.Scriptable
+			Camera.CFrame = Attachment.WorldCFrame * CFrame.new(0,1,2.75)
 
 			task.wait(.25)
 
@@ -58,6 +60,7 @@ Runservice.heartbeat:Connect(function()
 			task.wait(.25)
 		else
 			Tracking = false
+			task.wait(.25)
 		end
 	end
 end)
