@@ -38,28 +38,22 @@ function autoTriggerPrompt(prompt:ProximityPrompt)
 	end
 end
 
-for _, object in workspace:GetDescendants() do
-	if object:FindFirstChild("071_GARDEN_CENTER") then
-		object:Destroy()
-	end
-end
-
 Runservice.heartbeat:Connect(function()
 	local Atm = FindAtm(workspace)
 	local Attachment = Atm.Attachment
-	
+
 	if not Tracking then
 		if Atm and Atm:GetAttribute("State") ~= "Busted" then
 			local Prompt = Attachment.ProximityPrompt
-			
+
 			Tracking = true
 			Char:PivotTo(Attachment.WorldCFrame)
 			Camera.CameraSubject = Atm
-			
+
 			task.wait(.25)
-			
+
 			autoTriggerPrompt(Prompt)
-			
+
 			Tracking = false
 		else
 			Tracking = false
