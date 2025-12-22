@@ -43,6 +43,16 @@ for _, v in workspace:GetDescendants() do
 	end
 end
 
+function SwitchSides(Char:Model)
+	local Vectors = {
+		Vector3.new(-316.107,20,-1661.905),
+		Vector3.new(99,35,1556)
+	}
+
+	local ChosenVector = Vectors[math.random(1, #Vectors)]
+	Char:MoveTo(ChosenVector)
+end
+
 Runservice.renderStepped:Connect(function()
 	local Atm = FindAtm(workspace)
 	local Attachment = Atm.Attachment
@@ -63,25 +73,13 @@ Runservice.renderStepped:Connect(function()
 
 			Camera.CameraSubject = player.Character.Humanoid
 			Camera.CameraType = Enum.CameraType.Custom
-			task.wait(.1)
-			Switch = true
-			task.wait(.25)
+			
+			SwitchSides(Char)
+			task.wait(.35)
 			Tracking = false
 		else
 			Tracking = false
 			task.wait(1)
 		end
-	end
-
-	if Switch then
-		local Vectors = {
-			Vector3.new(-316.107,20,-1661.905),
-			Vector3.new(99,35,1556)
-		}
-
-		local ChosenVector = Vectors[math.random(1, #Vectors)]
-		Char:PivotTo(ChosenVector)
-		task.wait(.25)
-		Switch = false
 	end
 end)
