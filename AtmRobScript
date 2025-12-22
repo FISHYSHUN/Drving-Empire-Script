@@ -118,7 +118,7 @@ Runservice.Heartbeat:Connect(function()
 				Switch = true
 				
 				SwitchSides(Char)
-				task.wait(1)
+				task.wait(3)
 				
 				Switch = false
 			end
