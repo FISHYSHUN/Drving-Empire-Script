@@ -42,89 +42,22 @@ end
 
 while task.wait() do
 	if not Tracking then
-		Tracking = true
---Services
-local Runservice = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-
---Variables
-local player = game.Players.LocalPlayer
-local Char = player.character
---Values
-local Tracking = false
-
-function FindAtm(descendants:Folder)
-	for i, v in pairs(descendants:GetDescendants()) do
-		if v:GetAttribute("State") then
-			local State = v:GetAttribute("State")
-
-			if State ~= "Busted" then
-				return v
-			end
-		end
-	end
-end
-
--- Function to trigger the prompt automatically
-local function autoTriggerPrompt(prompt)
-	if prompt and prompt:IsA("ProximityPrompt") then
-		-- Simulate the player starting the hold
-		prompt:InputHoldBegin()
-		-- Wait for the required hold duration
-		task.wait(prompt.HoldDuration)
-		-- Simulate the player releasing the hold
-		prompt:InputHoldEnd()
-	else
-		warn("ProximityPrompt not found or invalid.")
-	end
-end
-
-for _, object in workspace:GetDescendants() do
-	if object:FindFirstChild("071_GARDEN_CENTER") then
-		object:Destroy()
-	end
-end
-
-while task.wait() do
-	if not Tracking then
-		Tracking = true
-
 		local Atm = FindAtm(workspace)
-
+		
 		if Atm and Atm:GetAttribute("State") ~= "Busted" then
+			Tracking = true
+
 			local Attachment = Atm.Attachment
 			local Prompt = Attachment.ProximityPrompt
 
 			Char:PivotTo(Attachment.WorldCFrame)
 			autoTriggerPrompt(Prompt)
-
+			
 			Tracking = false
+			task.wait(.1)
 		else
-			task.wait()
-			
-			tracking = false
-			continue
-		end
-	end
-end
-		local Atm = FindAtm(workspace)
-
-		if Atm and Atm:GetAttribute("State") ~= "Busted" then
-			local Attachment = Atm.Attachment
-			local Prompt = Attachment.ProximityPrompt
-
-			Char:PivotTo(Attachment.WorldCFrame)
-			
-			task.wait(.125)
-			
-			autoTriggerPrompt(Prompt)
-
 			Tracking = false
-		else
-			task.wait()
-			
-			tracking = false
-			continue
+			task.wait(.1)
 		end
 	end
 end
