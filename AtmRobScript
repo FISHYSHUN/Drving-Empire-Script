@@ -83,7 +83,7 @@ NewButton.Activated:Connect(function()
 end)
 
 ClaimButton.Activated:Connect(function()
-	Char:MoveTo(Vector3.new(2541, 15, 4032))
+	Char:MoveTo(Vector3.new(-2544, 15, 4030))
 end)
 
 Runservice.Heartbeat:Connect(function()
