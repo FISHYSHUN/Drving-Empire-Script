@@ -56,8 +56,7 @@ Runservice.heartbeat:Connect(function()
 			Char:PivotTo(Attachment.WorldCFrame)
 			Camera.CameraSubject = Attachment
 			Camera.CameraType = Enum.CameraType.Scriptable
-			Camera.CFrame = Attachment.WorldCFrame * CFrame.new(0,1,2.75)
-
+			Camera.CFrame = Attachment.WorldCFrame * CFrame.new(0,7,0) * CFrame.Angles(math.rad(-90),0,0)
 			task.wait(.25)
 
 			autoTriggerPrompt(Prompt)
