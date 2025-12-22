@@ -80,7 +80,7 @@ Runservice.renderStepped:Connect(function()
 		}
 
 		local ChosenVector = Vectors[math.random(1, #Vectors)]
-		Char:PivotTo(Char:GetPivot() + ChosenVector)
+		Char:PivotTo(ChosenVector)
 		task.wait(.25)
 		Switch = false
 	end
