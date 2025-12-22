@@ -9,8 +9,6 @@ local Camera = workspace.CurrentCamera
 --Values
 local Tracking = false
 
-task.wait(.1)
-
 function FindAtm(descendants:Folder)
 	for i, v in pairs(descendants:GetDescendants()) do
 		if v:GetAttribute("State") then
@@ -56,7 +54,7 @@ Runservice.heartbeat:Connect(function()
 			Char:PivotTo(Attachment.WorldCFrame)
 			Camera.CameraSubject = Attachment
 			Camera.CameraType = Enum.CameraType.Scriptable
-			Camera.CFrame = Attachment.WorldCFrame * CFrame.new(1,4,0) * CFrame.Angles(math.rad(-90),0,0)
+			Camera.CFrame = Attachment.WorldCFrame * CFrame.new(0,4,-1) * CFrame.Angles(math.rad(-90),0,0)
 			
 			task.wait(.4)
 
