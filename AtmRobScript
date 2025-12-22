@@ -40,10 +40,10 @@ for _, object in workspace:GetDescendants() do
 	end
 end
 
-while task.wait() do
+Runservice.heartbeat:Connect(function()
 	if not Tracking then
 		local Atm = FindAtm(workspace)
-		
+
 		if Atm and Atm:GetAttribute("State") ~= "Busted" then
 			Tracking = true
 
@@ -52,12 +52,12 @@ while task.wait() do
 
 			Char:PivotTo(Attachment.WorldCFrame)
 			autoTriggerPrompt(Prompt)
-			
+
 			Tracking = false
-			task.wait(.1)
+			task.wait()
 		else
 			Tracking = false
-			task.wait(.1)
+			task.wait()
 		end
 	end
-end
+end)
