@@ -79,11 +79,15 @@ NewButton.Activated:Connect(function()
 	else
 		Debounce = false
 		NewButton.Text = "State: "..tostring(Debounce)
+		Camera.CameraSubject = player.Character.Humanoid
+		Camera.CameraType = Enum.CameraType.Custom
 	end
 end)
 
 ClaimButton.Activated:Connect(function()
 	Char:MoveTo(Vector3.new(-2544, 15, 4030))
+	Camera.CameraSubject = player.Character.Humanoid
+	Camera.CameraType = Enum.CameraType.Custom
 end)
 
 Runservice.Heartbeat:Connect(function()
