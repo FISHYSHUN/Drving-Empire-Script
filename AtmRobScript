@@ -51,14 +51,11 @@ function LoadAtm()
 	if finding then
 		local spawnsTable = FindAtmSpawner()
 		if spawnsTable then
-			for i = 1, #spawnsTable do
-				char:PivotTo(spawnsTable[i].CFrame * CFrame.new(0,2,0))
-				task.wait(.125)
-				if i == #spawnsTable then
-					finding = false
-					tracking = true
-				end
-			end
+			local RandomSpawn = spawnsTable[math.random(1, #spawnsTable)]
+			char:PivotTo(RandomSpawn.CFrame * CFrame.new(0,2,0))
+			finding = false
+			task.wait(1)
+			tracking = true
 		else
 			finding = false
 			tracking = true
@@ -79,6 +76,7 @@ end
 
 function RobATM()
 	if tracking then
+		tracking = false
 		local ATM = ChooseAtmSpawner()
 		if ATM then
 			local Attachment = ATM:FindFirstChild("Attachment")
@@ -94,10 +92,8 @@ function RobATM()
 			CompleteProximity(Prompt)
 			CameraReset()
 
-			tracking = false
-			finding = true
-		else
-			tracking = false
+			tracking = true
+		elseif not ATM then
 			finding = true
 		end
 	end
@@ -123,7 +119,7 @@ end)
 while task.wait() do
 	if deb then
 		if not tracking then
-			LoadAtm()
+			
 		elseif tracking then
 			RobATM()
 		end
