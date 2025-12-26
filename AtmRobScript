@@ -54,7 +54,7 @@ function LoadAtm()
 			local RandomSpawn = spawnsTable[math.random(1, #spawnsTable)]
 			char:PivotTo(RandomSpawn.CFrame * CFrame.new(0,2,0))
 			finding = false
-			task.wait(1)
+			task.wait(5)
 			tracking = true
 		else
 			finding = false
