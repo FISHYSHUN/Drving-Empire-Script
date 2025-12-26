@@ -118,10 +118,11 @@ end)
 
 while task.wait() do
 	if deb then
-		if not tracking then
-			
-		elseif tracking then
+		if tracking then
 			RobATM()
+		end
+		if finding and not tracking then
+			LoadAtm()
 		end
 	end
 end
