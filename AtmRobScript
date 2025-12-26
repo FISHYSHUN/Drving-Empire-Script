@@ -51,11 +51,10 @@ function LoadAtm()
 	if finding then
 		local spawnsTable = FindAtmSpawner()
 		if spawnsTable then
-			local IndexMin = math.min(4, #spawnsTable)
-			for i = 1, IndexMin do
+			for i = 1, #spawnsTable do
 				char:PivotTo(spawnsTable[i].CFrame * CFrame.new(0,2,0))
-				task.wait(.125)
-				if i == IndexMin then
+				task.wait()
+				if i == #spawnsTable then
 					finding = false
 					tracking = true
 				end
