@@ -105,6 +105,12 @@ function RobATM()
 end
 --\\//
 
+for _, v in workspace:GetDescendants() do
+	if v.Name == "071_GARDEN_CENTER" and v:IsA("Model") then
+		v:Destroy()
+	end
+end
+
 NewButton.Activated:Connect(function()
 	if deb then
 		deb = false
