@@ -1,11 +1,15 @@
+--\\Variables//
 local plr = game.Players.LocalPlayer
 local PlrGui = plr.PlayerGui
 local char = plr.Character or plr.CharacterAdded:Wait()
 local camera = workspace.CurrentCamera
+--\\//
 
+--\\Values//
 local deb = false
 local tracking = true
 local finding = false
+--\\//
 
 local ScreenUI = Instance.new("ScreenGui", PlrGui)
 local NewButton = Instance.new("TextButton" , ScreenUI)
@@ -13,6 +17,7 @@ NewButton.Size = UDim2.new(0.15,0,0.15,0)
 NewButton.Position = UDim2.new(.85,0,.85,0)
 NewButton.Text = "Status: False"
 
+--\\Functions//
 local function CompleteProximity(proximityPrompt:ProximityPrompt)
 	if not proximityPrompt then return warn("No prompt found") end
 	proximityPrompt:InputHoldBegin()
@@ -98,6 +103,7 @@ function RobATM()
 		end
 	end
 end
+--\\//
 
 NewButton.Activated:Connect(function()
 	if deb then
