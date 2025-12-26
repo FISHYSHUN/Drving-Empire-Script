@@ -1,147 +1,120 @@
---Services
-local Runservice = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
+local plr = game.Players.LocalPlayer
+local PlrGui = plr.PlayerGui
+local char = plr.Character or plr.CharacterAdded:Wait()
+local camera = workspace.CurrentCamera
 
---Variables
-local player = game.Players.LocalPlayer
-local Char = player.Character or player.CharacterAdded:Wait()
-local Camera = workspace.CurrentCamera
---Values
-local Debounce = false
-local Tracking = false
-local Switch = false
+local deb = false
+local tracking = true
+local finding = false
 
----
+local ScreenUI = Instance.new("ScreenGui", PlrGui)
+local NewButton = Instance.new("TextButton" , ScreenUI)
+NewButton.Size = UDim2.new(0.15,0,0.15,0)
+NewButton.Position = UDim2.new(.85,0,.85,0)
+NewButton.Text = "Status: False"
 
-function FindAtmSpawner(descendants:Folder)
-	for i, v in pairs(descendants:GetDescendants()) do
+local function CompleteProximity(proximityPrompt:ProximityPrompt)
+	if not proximityPrompt then return warn("No prompt found") end
+	proximityPrompt:InputHoldBegin()
+	task.wait(proximityPrompt.HoldDuration + 0.15)
+	proximityPrompt:InputHoldEnd()
+end
+
+function FindAtmSpawner()
+	local spawnsTable = {}
+	for _, v in workspace:GetDescendants() do
 		if v:GetAttribute("ComponentServerId") and v.Name == "CriminalATMSpawner" then
-			local ComponentServerId = v:GetAttribute("ComponentServerId")
+			table.insert(spawnsTable, v)
+		end
+	end
+	return spawnsTable
+end
 
-			if ComponentServerId ~= nil then
-				return v
+local function ChooseAtmSpawner()
+	for _ , ATM:BasePart in workspace:GetDescendants() do
+		if ATM:GetAttribute("ComponentServerId") and ATM.Name == "CriminalATMSpawner" then
+			local CrimATM = ATM:FindFirstChild("CriminalATM")
+			if CrimATM and CrimATM:GetAttribute("State") ~= "Busted" then
+				return CrimATM
 			end
 		end
 	end
+
 end
 
--- Function to trigger the prompt automatically
-function autoTriggerPrompt(prompt:ProximityPrompt)
-	if prompt and prompt:IsA("ProximityPrompt") then
-		task.wait()
-		-- Simulate the player starting the hold
-		prompt:InputHoldBegin()
-		-- Wait for the required hold duration
-		task.wait(prompt.HoldDuration + 0.2)
-		-- Simulate the player releasing the hold
-		prompt:InputHoldEnd()
-	else
-		warn("ProximityPrompt not found or invalid.")
+function LoadAtm()
+	if finding then
+		local spawnsTable = FindAtmSpawner()
+		if spawnsTable then
+			local IndexMin = math.min(4, #spawnsTable)
+			for i = 1, IndexMin do
+				char:PivotTo(spawnsTable[i].CFrame * CFrame.new(0,2,0))
+				task.wait(.125)
+				if i == IndexMin then
+					finding = false
+					tracking = true
+				end
+			end
+		else
+			finding = false
+			tracking = true
+		end
 	end
 end
 
 function CameraFollow(Attachment)
-	Camera.CameraSubject = Attachment
-	Camera.CameraType = Enum.CameraType.Scriptable
-	Camera.CFrame = Attachment.WorldCFrame * CFrame.new(0,4,-1) * CFrame.Angles(math.rad(-90),0,0)
+	camera.CameraSubject = Attachment
+	camera.CameraType = Enum.CameraType.Scriptable
+	camera.CFrame = Attachment.WorldCFrame * CFrame.new(0,4,-1) * CFrame.Angles(math.rad(-90),0,0)
 end
 
-local function SwitchSides(Char:Model)
-	local Vectors = {
-		Vector3.new(-88, 28, -152),
-		Vector3.new(-1278, 17, 2851)
-	}
-
-	local ChosenVector = Vectors[math.random(1, #Vectors)]
-	Char:MoveTo(ChosenVector)
+function CameraReset()
+	camera.CameraSubject = char:FindFirstChild("Humanoid")
+	camera.CameraType = Enum.CameraType.Custom
 end
 
-for _, v in workspace:GetDescendants() do
-	if v.Name == "071_GARDEN_CENTER" and v:IsA("Model") then
-		v:Destroy()
-	end
-end
+function RobATM()
+	if tracking then
+		local ATM = ChooseAtmSpawner()
+		if ATM then
+			local Attachment = ATM:FindFirstChild("Attachment")
+			local Prompt = Attachment:FindFirstChild("ProximityPrompt")
 
-local ScreenUi = Instance.new("ScreenGui", player.PlayerGui)
-local NewButton = Instance.new("TextButton", ScreenUi)
-local ClaimButton = Instance.new("TextButton", ScreenUi)
+			task.wait(.125)
 
-NewButton.Size = UDim2.new(.1, 0, 0.05, 0)
-NewButton.Position = UDim2.new(0, 0, .95, 0)
-ClaimButton.Size = UDim2.new(.05, 0, 0.05, 0)
-ClaimButton.Position = UDim2.new(0.1, 0, .95, 0)
-ClaimButton.Text = "Claim Bounty"
+			char:PivotTo(Attachment.WorldCFrame * CFrame.new(0,2,0))
+			CameraFollow(Attachment)
 
-NewButton.Activated:Connect(function()
-	if not Debounce then
-		Debounce = true
-		NewButton.Text = "State: "..tostring(Debounce)
-	else
-		Debounce = false
-		NewButton.Text = "State: "..tostring(Debounce)
-		Camera.CameraSubject = player.Character.Humanoid
-		Camera.CameraType = Enum.CameraType.Custom
-	end
-end)
+			task.wait(.21)
 
-ClaimButton.Activated:Connect(function()
-	Char:MoveTo(Vector3.new(-2544, 15, 4030))
-	Camera.CameraSubject = player.Character.Humanoid
-	Camera.CameraType = Enum.CameraType.Custom
-end)
+			CompleteProximity(Prompt)
+			CameraReset()
 
-Runservice.Heartbeat:Connect(function()
-	if Debounce then
-		local Character = player.Character
-		local AtmSpawner = FindAtmSpawner(workspace)
-		local CriminalATM = AtmSpawner:FindFirstChild("CriminalATM")
-		
-		if CriminalATM  and CriminalATM:GetAttribute("State") ~= "Busted" or CriminalATM ~= nil then
-			if not Tracking then
-				Tracking = true
-
-				if CriminalATM then
-					local Attachment = CriminalATM:FindFirstChild("Attachment")
-					local Prompt = Attachment:FindFirstChild("ProximityPrompt")
-					Character:PivotTo(Attachment.WorldCFrame)
-
-					task.wait(.1)
-					CameraFollow(Attachment)
-
-					task.wait(.345)
-
-					autoTriggerPrompt(Prompt)
-
-					Camera.CameraSubject = player.Character.Humanoid
-					Camera.CameraType = Enum.CameraType.Custom
-
-					task.wait(0.3)
-					Tracking = false
-				else
-					Tracking = false
-				end
-			end
-			
-			if not CriminalATM then
-				if not Switch then
-					Switch = true
-					
-					Char:PivotTo(AtmSpawner.CFrame)
-					task.wait(1)
-					Switch = true
-				end
-			end
-			
+			tracking = false
+			finding = true
+		else
+			tracking = false
+			finding = true
 		end
 	end
-end)
+end
 
-Runservice.Heartbeat:Connect(function()
-	if Debounce then
-		
-		
-		
+NewButton.Activated:Connect(function()
+	if deb then
+		deb = false
+		NewButton.Text = "Status: "..tostring(deb)
+	else
+		deb = true
+		NewButton.Text = "Status: "..tostring(deb)
 	end
 end)
 
---teleport to the atmspawnlocations continously and pause when finding one with an atm and not busted
+while task.wait() do
+	if deb then
+		if not tracking then
+			LoadAtm()
+		elseif tracking then
+			RobATM()
+		end
+	end
+end
