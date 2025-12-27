@@ -21,7 +21,7 @@ NewButton.Text = "Status: False"
 local function CompleteProximity(proximityPrompt:ProximityPrompt)
 	if not proximityPrompt then return warn("No prompt found") end
 	proximityPrompt:InputHoldBegin()
-	task.wait(proximityPrompt.HoldDuration + 0.15)
+	task.wait(proximityPrompt.HoldDuration)
 	proximityPrompt:InputHoldEnd()
 end
 
@@ -54,7 +54,7 @@ function LoadAtm()
 			local RandomSpawn = spawnsTable[math.random(1, #spawnsTable)]
 			char:PivotTo(RandomSpawn.CFrame * CFrame.new(0,2,0))
 			finding = false
-			task.wait(5)
+			task.wait(4)
 			tracking = true
 		else
 			finding = false
@@ -87,7 +87,7 @@ function RobATM()
 			char:PivotTo(Attachment.WorldCFrame * CFrame.new(0,2,0))
 			CameraFollow(Attachment)
 
-			task.wait(.21)
+			task.wait(.2)
 
 			CompleteProximity(Prompt)
 			CameraReset()
@@ -98,7 +98,6 @@ function RobATM()
 		end
 	end
 end
---\\//
 
 for _, v in workspace:GetDescendants() do
 	if v.Name == "071_GARDEN_CENTER" and v:IsA("Model") then
